@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# set -e 
+
+# parallel -q --ungroup ./two_steane_codes_tableau_simulation.py \
+#     --per {0} \
+#     --n_trials 10_000 \
+#     --save_file "two_steane" \
+#     ::: 0.001 0.0015 0.002 0.0025 0.003 0.004 0.005 0.0075 0.01 \
+   
+parallel -q --ungroup ./steane_ec_tableau_simulation.py \
+    --per {1} \
+    --n_trials 100_000 \
+    --n_errors 100 \
+    --code {2} \
+    --save_file "data" \
+    --basis {3} \
+    --max_error_weight 3 \
+    :::  0.007 0.008 0.009 \
+    ::: 16_4_4 18_6_3 \
+    ::: Z X
+
+#0.0005 0.0006 0.0007 0.0008 0.0009 0.001 0.0015 0.002 0.0025 0.003 0.004 0.005 0.0075

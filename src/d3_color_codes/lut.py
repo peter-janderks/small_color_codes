@@ -3,11 +3,14 @@ import stim
 import numpy.typing as npt
 import numpy as np
 from collections import defaultdict
+import itertools
+
 
 class LutDecoder:
     def __init__(
         self,
         model: stim.DetectorErrorModel,
+        max_error_weight: int = 3,
     ):
         self._matrices = detector_error_model_to_check_matrices(
             model, allow_undecomposed_hyperedges=True
@@ -18,43 +21,32 @@ class LutDecoder:
         self.lut: dict[bytes, npt.NDArray[np.int8]] = defaultdict(
             lambda: np.zeros(self.num_errors, dtype=np.int8)
         )
-        syndrome_weights: dict[bytes, tuple[npt.NDArray[np.int8_], int]] = {}
+        syndrome_weights: dict[bytes, tuple[npt.NDArray[np.int8], int]] = {}
 
+        def _update_syndrome_weights(indices: list[int], syndrome_weights: dict[bytes, tuple[npt.NDArray[np.int8], int]]):
+            state = np.zeros(self.num_errors, dtype=np.int8)
+            state[indices] = 1
+            syndrome = self._matrices.check_matrix @ state % 2
+            syndrome_bytes = syndrome.astype(np.int8).tobytes()
+            weight = state.sum()
+            val = syndrome_weights.get(syndrome_bytes)
+            if val is None or weight < val[1]:
+                syndrome_weights[syndrome_bytes] = (state.copy(), weight)
 
+        for w in range(max_error_weight + 1):
+            for indices in itertools.combinations(range(self.num_errors), w):
+                _update_syndrome_weights(
+                    list(indices), syndrome_weights)
         # Add all-zero key to syndrome_weights
         zero_state = np.zeros(self.num_errors, dtype=np.int8)
         zero_syndrome = self._matrices.check_matrix @ zero_state % 2
         zero_syndrome_bytes = zero_syndrome.astype(np.int8).tobytes()
         syndrome_weights[zero_syndrome_bytes] = (zero_state.copy(), 0)
 
-        for i in range(self.num_errors):
-            indices = [i]
-            state = np.zeros(self.num_errors, dtype=np.int8)
-            state[indices] = 1
-            syndrome = self._matrices.check_matrix @ state % 2
-            syndrome_bytes = syndrome.astype(np.int8).tobytes()
-            val = syndrome_weights.get(syndrome_bytes)
-            weight = state.sum()
-            if val is None or weight < val[1]:
-                syndrome_weights[syndrome_bytes] = (state.copy(), weight)
-
-        for i in range(self.num_errors):
-            for j in range(i + 1, self.num_errors):
-                indices = [i, j]
-            state = np.zeros(self.num_errors, dtype=np.int8)
-            state[indices] = 1
-            syndrome = self._matrices.check_matrix @ state % 2
-            syndrome_bytes = syndrome.astype(np.int8).tobytes()
-            val = syndrome_weights.get(syndrome_bytes)
-            weight = state.sum()
-            if val is None or weight < val[1]:
-                syndrome_weights[syndrome_bytes] = (state.copy(), weight)
-        
         for key, v in syndrome_weights.items():
+
             self.lut[key] = np.array(v[0])
-
-
-
+        print("LUT READY")
 
     def decode(self, syndrome: np.ndarray) -> np.ndarray:
         """
@@ -74,7 +66,6 @@ class LutDecoder:
             Its length is equal to the number of observables in the `stim.Circuit` or `stim.DetectorErrorModel`.
             `predictions[i]` is 1 if the decoder predicts observable `i` was flipped and 0 otherwise.
         """
-        
         corr = self.lut[syndrome.astype(np.int8).tobytes()]
         return (self._matrices.observables_matrix @ corr) % 2
 
@@ -87,7 +78,7 @@ class LutDecoder:
     ) -> np.ndarray:
         """
         Decode a batch of shots of syndrome data. This is just a helper method, equivalent to iterating over each
-        shot and calling `BPOSD.decode` on it.
+        shot and calling `LutDecoder.decode` on it.
 
         Parameters
         ----------
@@ -106,7 +97,8 @@ class LutDecoder:
                 :, : self.num_detectors
             ]
         predictions = np.zeros(
-            (shots.shape[0], self._matrices.observables_matrix.shape[0]), dtype=bool
+            (shots.shape[0],
+             self._matrices.observables_matrix.shape[0]), dtype=bool
         )
         for i in range(shots.shape[0]):
             predictions[i, :] = self.decode(shots[i, :])
