@@ -2,7 +2,8 @@ from sinter import Decoder, CompiledDecoder
 import stim
 import pathlib
 import numpy as np
-from d3_color_codes.lut import LutDecoder
+from small_color_codes.lut import LutDecoder
+
 
 class SinterCompiledLutDecoder(CompiledDecoder):
     def __init__(self, decoder: LutDecoder):
@@ -19,13 +20,12 @@ class SinterCompiledLutDecoder(CompiledDecoder):
             bit_packed_predictions=True,
         )
 
+
 class SinterLutDecoder(Decoder):
     def __init__(
         self,
     ):
         pass
-
-
 
     def compile_decoder_for_dem(
         self, *, dem: stim.DetectorErrorModel
@@ -44,7 +44,7 @@ class SinterLutDecoder(Decoder):
         obs_predictions_b8_out_path: pathlib.Path,
         tmp_dir: pathlib.Path,
     ) -> None:
-       
+
         dem = stim.DetectorErrorModel.from_file(dem_path)
         lut_decoder = LutDecoder(model=dem)
         shots = stim.read_shot_data_file(

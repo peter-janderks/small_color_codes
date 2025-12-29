@@ -1,6 +1,6 @@
-from mqt.qecc.circuit_synthesis.state_prep import  heuristic_prep_circuit, gate_optimal_verification_circuit
+from mqt.qecc.circuit_synthesis.state_prep import heuristic_prep_circuit, gate_optimal_verification_circuit
 from mqt.qecc.codes.css_code import CSSCode
-from d3_color_codes.circuit_utils.qiskit_to_stim import qiskit_to_stim_circuit
+from small_color_codes.circuit_utils.qiskit_to_stim import qiskit_to_stim_circuit
 import numpy as np
 
 

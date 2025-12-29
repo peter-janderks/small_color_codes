@@ -6,7 +6,7 @@ import qiskit
 import stim
 
 import numpy as np
-from d3_color_codes.circuit_utils.qiskit_to_stim import qiskit_to_stim_circuit
+from small_color_codes.circuit_utils.qiskit_to_stim import qiskit_to_stim_circuit
 
 Hx = np.zeros((6, 18), dtype=np.int8)
 # in the first row of the matrix, there should be 1 at indices 0, 1, 4, 5

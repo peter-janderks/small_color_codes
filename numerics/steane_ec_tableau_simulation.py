@@ -3,12 +3,12 @@
 import argparse
 import os
 from typing import List
-from d3_color_codes.code_library import get_noiseless_circuits
-from d3_color_codes.steane_ecc_circuits import SteaneECCircuits
+from small_color_codes.code_library import get_noiseless_circuits
+from small_color_codes.steane_ecc_circuits import SteaneECCircuits
 
-from d3_color_codes.lut import LutDecoder
+from small_color_codes.lut import LutDecoder
 import numpy as np
-from d3_color_codes.circuit_utils._noise import NoiseModel
+from small_color_codes.circuit_utils._noise import NoiseModel
 import stim
 import sinter
 import webbrowser

@@ -1,5 +1,5 @@
 from ldpc.code_util import compute_code_distance
-from d3_color_codes.steane_ecc_circuits import SteaneECCircuits
+from small_color_codes.steane_ecc_circuits import SteaneECCircuits
 import numpy as np
 from mqt.qecc.codes.css_code import CSSCode
 
@@ -22,7 +22,6 @@ n16_k4_d3 = CSSCode(6, Hx=H, Hz=H, n=16)
 
 
 Hx = np.zeros((6, 18), dtype=np.int8)
-# in the first row of the matrix, there should be 1 at indices 0, 1, 4, 5
 Hx[0, [0, 1, 3, 4, 6, 7]] = 1
 Hx[1, [4, 5, 7, 8, 10, 11]] = 1
 Hx[2, [6, 7, 9, 10, 12, 13]] = 1
@@ -53,8 +52,6 @@ Hz[6, [12, 13, 15, 16, 18, 19]] = 1
 Hz[7, [14, 15, 17, 18, 0, 1]] = 1
 n20_k4_d4_pauli = CSSCode(4, Hx=Hx, Hz=Hz, n=20)
 
-print(n20_k4_d4_pauli.Hx * n20_k4_d4_pauli.Lz[0].T % 2)
-# logicals = n20_k4_d4_pauli._compute_logical(Hx, Hz)
 
 H = np.zeros((8, 20))
 H[0, [0, 1, 3, 4, 7, 8]] = 1
@@ -103,7 +100,6 @@ H[4, [6, 7, 10, 11]] = 1
 
 
 total_ones = 2*np.sum(H)
-print(total_ones, '12_2_3')
 
 n12_k2_d3 = CSSCode(3, Hx=H, Hz=H, n=12)
 
@@ -123,7 +119,6 @@ Hz[3, [4, 5, 8, 10]] = 1
 Hz[4, [8, 9, 10, 11]] = 1
 n12_k2_d3_pauli = CSSCode(3, Hx=Hx, Hz=Hz, n=12)
 total_ones = np.sum(Hx) + np.sum(Hz)
-print(total_ones, '12_2_3 pauli')
 
 code_dict = {
     "7_1_3": n7_k1_d3,

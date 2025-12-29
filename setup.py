@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="d3_color_codes",
+    name="small_color_codes",
     version="0.1.0",
     description="A Python package for color code simulation and analysis.",
     author="Your Name",
