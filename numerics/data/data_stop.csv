@@ -1,2 +1,0 @@
-     shots,    errors,  discards, seconds,decoder,strong_id,json_metadata,custom_counts
-      3122,       100,         0,    10.3,lut,d1f0bb068af98c657377b601f9d9b6dd850ea55f3a064e440982f35b16e90e0c,"{""basis"":""Z"",""code"":""7_1_3"",""k"":1,""max_error_weight"":3,""per"":0.01}",

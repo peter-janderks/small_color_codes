@@ -1,5 +1,0 @@
-     shots,    errors,  discards, seconds,decoder,strong_id,json_metadata,custom_counts
-    100000,         0,         0,   368.8,lut,f5530cc2fa0c90d706d099bdb967df2c31f766d2b352ee7773a2bd2183bcdeac,"{""basis"":""Z"",""code"":""16_4_4"",""max_error_weight"":3,""per"":0.0001}",
-    100000,         0,         0,   377.0,lut,c80fc275a6f6a828de724ec85e30b7bb7e4a78b8878cd45142764ee5a3a26f86,"{""basis"":""X"",""code"":""16_4_4"",""max_error_weight"":3,""per"":0.0001}",
-        10,         0,         0,    3.42,lut,c80fc275a6f6a828de724ec85e30b7bb7e4a78b8878cd45142764ee5a3a26f86,"{""basis"":""X"",""code"":""16_4_4"",""max_error_weight"":3,""per"":0.0001}",
-        10,         0,         0,    4.01,lut,f5530cc2fa0c90d706d099bdb967df2c31f766d2b352ee7773a2bd2183bcdeac,"{""basis"":""Z"",""code"":""16_4_4"",""max_error_weight"":3,""per"":0.0001}",
