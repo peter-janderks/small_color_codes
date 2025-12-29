@@ -4,10 +4,10 @@ setup(
     name="small_color_codes",
     version="0.1.0",
     description="A Python package for color code simulation and analysis.",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Peter-Jan Derks",
+    author_email="peter-janderks@hotmail.com",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[],
-    python_requires=">=3.7",
+    python_requires=">=3.11",
 )
