@@ -86,7 +86,6 @@ def calculate_logical_error_rate(per: float,
                                  n_errors: int = 100,
                                  basis: str = 'Z',
                                  max_error_weight: int = 3) -> float:
-
     noiseless_circuits = get_noiseless_circuits(code, basis=basis)
     number_of_logicals = noiseless_circuits.final_measurements.num_observables
 
@@ -102,7 +101,6 @@ def calculate_logical_error_rate(per: float,
     circ += noiseless_circuits.ancilla_logical_0_init
     circ += noisy_circuits.steane_ec_x_stabilizers
     circ += noisy_circuits.final_measurements
-
     decoder = LutDecoder(circ.detector_error_model(),
                          max_error_weight=max_error_weight)
     total_uncorrected = 0
@@ -119,13 +117,11 @@ def calculate_logical_error_rate(per: float,
         if logical_errors[-1] == n_errors:
             print('stopping early')
             break
-    logical_errors[-1] /= number_of_logicals
     print(total_uncorrected, 'uncorrected errors in', trials+1, 'trials')
     return trials+1, logical_errors
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--per', type=float)
     parser.add_argument('--n_trials', type=int, default=1000,
@@ -133,7 +129,7 @@ if __name__ == "__main__":
     parser.add_argument('--n_errors', type=int, default=100,
                         help='Number of errors to simulate for each error rate')
     parser.add_argument('--code', type=str,
-                        choices=['16_4_3', '18_6_3', '16_4_4', '7_1_3', '27_9_3', '12_2_3'], default='steane')
+                        choices=['16_4_3', '18_6_3', '16_4_4', '7_1_3', '27_9_3', '12_2_3', '20_4_4', '20_4_4_pauli'], default='steane')
     parser.add_argument('--save_file', type=str, nargs='+',
                         default='out/circuits')
     parser.add_argument('--basis', type=str, default='Z',)
@@ -149,10 +145,11 @@ if __name__ == "__main__":
     end_time = time.time()
 
     print('per:', args.per, 'trials:', trials,
-          'lers:', lers, 'ler:', lers[-1]/trials)
+          'lers:', lers, 'ler:', lers[-1]/trials,
+          'k:', args.code.split('_')[1])
     metadata_dict = {k: v for k, v in vars(args).items() if (
         k != 'save_file' and k != 'n_trials' and k != 'n_errors')}
-#    metadata_dict['logical_error_rates'] = [int(ler) for ler in lers]
+    metadata_dict['k'] = int(args.code.split('_')[1])
     strong_id_string = str(args.code) + str(args.per) + \
         str(args.basis) + str(args.max_error_weight)
     strong_id_hash = hashlib.sha256(
@@ -161,7 +158,7 @@ if __name__ == "__main__":
     test = sinter.TaskStats(
         strong_id=strong_id_hash,
         shots=trials,
-        errors=int(lers[-1]),
+        errors=lers[-1],
         decoder="lut",
         json_metadata=metadata_dict,
         seconds=end_time - start_time,
